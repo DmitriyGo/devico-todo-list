@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Rubik', sans-serif;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+#root {
+    padding-top: 5rem;
+}
+
+.todo-app {
+    min-width: 500px;
+    width: 40%;
+    background-color: #ccf2f3;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.todo-app__header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.todo-app__form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.todo-app__title {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.todo-app__input {
+    margin-bottom: 1.5rem;
+    width: 60%;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 0.25rem 0 0 0.25rem;
+    font-size: 1rem;
+}
+
+.todo-app__input:focus {
+    outline: none;
+}
+
+.todo-app__button {
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1.75rem;
+    background-color: #a2ebf2;
+    border: none;
+    border-radius: 0 0.25rem 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.todo-app__list {
+    list-style-type: none;
+    width: 80%;
+    margin-bottom: 1.5rem
+}
+
+.todo-app__item {
+    margin: 0.5rem 0;
+    background-color: #b8e4f1;
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    user-select: none;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.todo-app__item-checkbox {
+    margin-right: 0.5rem;
+    cursor: pointer;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: #eee;
+    outline: none;
+}
+
+.todo-app__item-text {
+    flex-grow: 1;
+}
+
+.todo-app__item-edit {
+    margin: 0 0.5rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.todo-app__item-edit:hover  {
+    color:lightslategrey;
+}
+
+.todo-app__item-remove  {
+    margin: 0 0.5rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.todo-app__item-remove:hover  {
+    color:lightslategrey;
+}
+
+.todo-app__item-completed .todo-app__item-text {
+    text-decoration: line-through;
+    color:lightslategrey;
+}
+
+.todo-app__item-change__input {
+    width: 100%;
+    font-size: 1.1rem;
+    border-radius: 0.25rem;
+    background-color: #b8e4f1;
+    border: none;
+}
+
+.todo-app__item-change__input:focus {
+    border: none;
+    outline: none;
+}
+
+.todo-app__button-clear {
+    border: none;
+    background-color: #ccf2f3;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.todo-app__button-clear:hover {
+    color: lightslategrey
+}
+
+.todo-app__footer {
+display: flex;
+gap: 1rem;
+}

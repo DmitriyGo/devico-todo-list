@@ -10,28 +10,28 @@ class TodoApp {
   #selectedTodo = null;
 
   constructor() {
-    this.todoItemsList = createElement("ul", { classList: "todo-app__list" });
+    this.todoItemsList = createElement('ul', { classList: 'todo-app__list' });
 
-    this.todoItemsFooter = createElement("div", {
-      classList: "todo-app__footer",
+    this.todoItemsFooter = createElement('div', {
+      classList: 'todo-app__footer',
     });
 
-    this.activeTodosCounter = createElement("div");
-    this.completedTodosCounter = createElement("div");
+    this.activeTodosCounter = createElement('div');
+    this.completedTodosCounter = createElement('div');
 
     this.todoItemsFooter.append(
       this.activeTodosCounter,
       this.completedTodosCounter,
       createElement(
-        "button",
+        'button',
         {
-          classList: "todo-app__button-clear",
+          classList: 'todo-app__button-clear',
           onclick: (e) => {
             e.preventDefault();
             this.clearCompleted();
           },
         },
-        "Clear completed"
+        'Clear completed'
       )
     );
   }
@@ -75,22 +75,22 @@ class TodoApp {
 
   save() {
     try {
-      localStorage.setItem("todoItems", JSON.stringify(this.#items));
+      localStorage.setItem('todoItems', JSON.stringify(this.#items));
     } catch (error) {
-      console.error("Failed to save todoItems to localStorage:", error);
+      console.error('Failed to save todoItems to localStorage:', error);
     }
   }
 
   load() {
     try {
-      const items = JSON.parse(localStorage.getItem("todoItems") ?? "[]");
+      const items = JSON.parse(localStorage.getItem('todoItems') ?? '[]');
       items.forEach((item) => {
         item.editable = false;
       });
       this.#items = items;
       this.update();
     } catch (error) {
-      console.error("Failed to load todoItems from localStorage:", error);
+      console.error('Failed to load todoItems from localStorage:', error);
     }
   }
 
@@ -100,17 +100,17 @@ class TodoApp {
   }
 
   render() {
-    this.todoItemsList.innerHTML = "";
+    this.todoItemsList.innerHTML = '';
 
     this.#items.forEach((item) => {
-      this.todoItemInput = createElement("input", {
-        classList: "todo-app__item-change__input",
+      this.todoItemInput = createElement('input', {
+        classList: 'todo-app__item-change__input',
         value: item.name,
         onclick: (e) => {
           e.stopPropagation();
         },
         onkeyup: (e) => {
-          if (e.key === "Enter") {
+          if (e.key === 'Enter') {
             item.name = e.target.value;
             this.#selectedTodo = null;
             this.update();
@@ -120,35 +120,35 @@ class TodoApp {
 
       this.todoItemsList.append(
         createElement(
-          "li",
+          'li',
           {
-            classList: "todo-app__item",
+            classList: 'todo-app__item',
             onclick: (e) => {
               e.stopPropagation();
               this.toggleStatus(item);
               this.update();
             },
           },
-          createElement("input", {
-            type: "checkbox",
-            classList: "todo-app__item-checkbox",
+          createElement('input', {
+            type: 'checkbox',
+            classList: 'todo-app__item-checkbox',
             checked: item.completed,
           }),
           item._id !== this.#selectedTodo?._id
             ? createElement(
-                "span",
+                'span',
                 {
                   classList: `todo-app__item-text ${
-                    item.completed ? "todo-app__item-completed" : ""
+                    item.completed ? 'todo-app__item-completed' : ''
                   }`,
                 },
                 item.name
               )
             : this.todoItemInput,
           createElement(
-            "span",
+            'span',
             {
-              classList: "todo-app__item-edit",
+              classList: 'todo-app__item-edit',
               onclick: (e) => {
                 e.stopPropagation();
                 if (this.#selectedTodo?._id === item._id) {
@@ -159,18 +159,18 @@ class TodoApp {
                 this.update();
               },
             },
-            this.#selectedTodo?._id !== item._id ? "&#x270E;" : "&#x2714;"
+            this.#selectedTodo?._id !== item._id ? '&#x270E;' : '&#x2714;'
           ),
           createElement(
-            "span",
+            'span',
             {
-              classList: "todo-app__item-remove",
+              classList: 'todo-app__item-remove',
               onclick: (e) => {
                 e.stopPropagation();
                 this.remove(item);
               },
             },
-            "&#x2716;"
+            '&#x2716;'
           )
         )
       );
@@ -185,38 +185,38 @@ class TodoApp {
 
 class TodoForm {
   constructor() {
-    this.todoFormInput = createElement("input", {
-      classList: "todo-app__input",
-      placeholder: "Add new todo...",
+    this.todoFormInput = createElement('input', {
+      classList: 'todo-app__input',
+      placeholder: 'Add new todo...',
       onsubmit: () => {
         this.todoForm.submit();
       },
     });
 
     this.todoForm = createElement(
-      "div",
-      { classList: "todo-form__wrapper" },
-      createElement("h1", { classList: "todo-form__title" }, "TODO LIST"),
+      'div',
+      { classList: 'todo-form__wrapper' },
+      createElement('h1', { classList: 'todo-form__title' }, 'TODO LIST'),
       createElement(
-        "form",
+        'form',
         {
-          classList: "todo-form__form",
+          classList: 'todo-form__form',
           onsubmit: (e) => {
             e.preventDefault();
             if (this.todoFormInput.value.trim().length) {
               todoApp.add(new TodoItem(this.todoFormInput.value));
-              this.todoFormInput.value = "";
+              this.todoFormInput.value = '';
             }
           },
         },
         this.todoFormInput,
         createElement(
-          "button",
+          'button',
           {
-            classList: "todo-app__button",
-            type: "submit",
+            classList: 'todo-app__button',
+            type: 'submit',
           },
-          "SUBMIT"
+          'SUBMIT'
         )
       )
     );
@@ -225,21 +225,21 @@ class TodoForm {
 
 //======= APP =======//
 
-const root = document.getElementById("root");
+const root = document.getElementById('root');
 
 const todoApp = new TodoApp();
 const todoForm = new TodoForm();
 todoApp.load();
 
 const todoWrapper = createElement(
-  "div",
-  { classList: "todo-app" },
+  'div',
+  { classList: 'todo-app' },
   todoForm.todoForm,
   todoApp.todoItemsList,
   todoApp.todoItemsFooter
 );
 
-window.addEventListener("load", () => root.append(todoWrapper));
+window.addEventListener('load', () => root.append(todoWrapper));
 
 // ======= HELPERS ======= //
 
@@ -251,8 +251,8 @@ function createElement(type, props, ...children) {
   }
 
   for (let child of children) {
-    if (typeof child === "string") {
-      if (child.startsWith("&")) {
+    if (typeof child === 'string') {
+      if (child.startsWith('&')) {
         element.innerHTML += child;
       } else {
         element.appendChild(document.createTextNode(child));

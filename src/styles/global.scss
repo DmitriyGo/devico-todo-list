@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Rubik', sans-serif;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+#root {
+    padding-top: 5rem;
+
+}
+
+.todo-app {
+    min-width: 500px;
+    width: 40%;
+    background-color: #ccf2f3;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

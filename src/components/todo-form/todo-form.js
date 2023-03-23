@@ -28,7 +28,7 @@ class TodoForm {
 
       this.inputValue = ''
 
-      this._todoStore.dispatch(addTodo(new TodoItem(value)))
+      this._todoStore.dispatch(addTodo.request(new TodoItem(value)))
     }
   }
 

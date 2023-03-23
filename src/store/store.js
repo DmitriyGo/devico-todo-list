@@ -1,50 +1,73 @@
-import reducer from './reducer'
-import { initialState } from './reducer'
+import Sagas from './sagas'
+import { addTodo, clearCompleted, deleteTodo, fetchTodos, updateTodo } from './actions'
 
-class Store {
-  constructor(reducer, middleware) {
-    this.state = initialState
-    this.reducer = reducer
-    this.middleware = middleware
-    this.listeners = []
+class Store extends Sagas {
+  constructor() {
+    super()
+    this._subscribeReducers()
   }
 
   getState() {
     return this.state
   }
 
-  dispatch = (action) => {
-    this.middleware(this)(this._dispatch)(action)
+  dispatch({ type, payload }) {
+    this.emit(type, payload)
   }
 
-  _dispatch = (action) => {
-    this.state = this.reducer(this.state, action)
-    for (const listener of this.listeners) {
-      listener(this.state)
+  subscribe(callback) {
+    this.on('update', callback)
+  }
+
+  fetchTodos(payload) {
+    this.state = { ...this.state, items: payload, loading: false }
+
+    this.emit('update')
+  }
+
+  addTodo(payload) {
+    this.state = { ...this.state, items: [...this.state.items, payload], loading: false }
+
+    this.emit('update')
+  }
+
+  updateTodo(payload) {
+    this.state = {
+      ...this.state,
+      items: this.state.items.map((todo) => (todo._id === payload._id ? payload : todo)),
+      loading: false,
     }
+
+    this.emit('update')
   }
 
-  subscribe(listener) {
-    this.listeners.push(listener)
-  }
-
-  unsubscribe(listener) {
-    const index = this.listeners.indexOf(listener)
-    if (index !== -1) {
-      this.listeners.splice(index, 1)
+  deleteTodo(payload) {
+    this.state = {
+      ...this.state,
+      items: this.state.items.filter((todo) => todo._id !== payload._id),
+      loading: false,
     }
+
+    this.emit('update')
+  }
+
+  clearCompletedTodos() {
+    this.state = {
+      ...this.state,
+      items: this.state.items.filter((todo) => !todo.completed),
+      loading: false,
+    }
+
+    this.emit('update')
+  }
+
+  _subscribeReducers() {
+    this.on(fetchTodos.success().type, (e) => this.fetchTodos(e))
+    this.on(addTodo.success().type, (e) => this.addTodo(e))
+    this.on(updateTodo.success().type, (e) => this.updateTodo(e))
+    this.on(deleteTodo.success().type, (e) => this.deleteTodo(e))
+    this.on(clearCompleted.success().type, () => this.clearCompletedTodos())
   }
 }
 
-function asyncMiddleware(store) {
-  return function (next) {
-    return async function (action) {
-      if (typeof action === 'function') {
-        return action(store.dispatch, store.getState)
-      }
-      return next(action)
-    }
-  }
-}
-
-export const store = new Store(reducer, asyncMiddleware)
+export const store = new Store()

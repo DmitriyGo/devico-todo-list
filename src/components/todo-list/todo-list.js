@@ -9,10 +9,11 @@ class TodoList {
 
     this._todoStore = store
     this._todoStore.subscribe(() => this.update())
-    this._todoStore.dispatch(fetchTodos())
+    this._todoStore.dispatch(fetchTodos.request())
 
     this.setSelectedItem = this.setSelectedItem.bind(this)
 
+    this.items = this._todoStore.getState().items || []
     this.selectedTodo = null
   }
 

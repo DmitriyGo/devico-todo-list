@@ -1,4 +1,4 @@
-import { store, removeTodo, updateTodo } from '../../store'
+import { store, deleteTodo, updateTodo } from '../../store'
 import createElement from '../../helpers/create-element'
 import './todo-list-item.scss'
 
@@ -24,20 +24,20 @@ class TodoListItem {
     if (e.key === 'Enter') {
       this.item.name = this.inputValue
       this.setSelectedItem(null)
-      this._todoStore.dispatch(updateTodo(this.item))
+      this._todoStore.dispatch(updateTodo.request(this.item))
     }
   }
 
   handleInputBlur = () => {
     this.item.name = this.inputValue
     this.setSelectedItem(null)
-    this._todoStore.dispatch(updateTodo(this.item))
+    this._todoStore.dispatch(updateTodo.request(this.item))
   }
 
   handleItemClick = (e) => {
     e.stopPropagation()
     this.item.completed = !this.item.completed
-    this._todoStore.dispatch(updateTodo(this.item))
+    this._todoStore.dispatch(updateTodo.request(this.item))
   }
 
   handleEditButtonClick = (e) => {
@@ -47,12 +47,12 @@ class TodoListItem {
     } else {
       this.setSelectedItem(!this.itemIsSelected ? this.item : null)
     }
-    this._todoStore.dispatch(updateTodo(this.item))
+    this._todoStore.dispatch(updateTodo.request(this.item))
   }
 
   handleRemoveButtonClick = (e) => {
     e.stopPropagation()
-    this._todoStore.dispatch(removeTodo(this.item))
+    this._todoStore.dispatch(deleteTodo.request(this.item))
   }
 
   render() {

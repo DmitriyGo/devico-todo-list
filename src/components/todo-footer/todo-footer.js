@@ -22,7 +22,7 @@ class TodoFooter {
 
   handleClearButtonClick(e) {
     e.preventDefault()
-    this._todoStore.dispatch(clearCompleted())
+    this._todoStore.dispatch(clearCompleted.request())
   }
 
   render() {

@@ -44,10 +44,10 @@ class TodoListItem {
     e.stopPropagation()
     if (this.itemIsSelected) {
       this.setSelectedItem(null)
+      this._todoStore.dispatch(updateTodo.request(this.item))
     } else {
-      this.setSelectedItem(!this.itemIsSelected ? this.item : null)
+      this.setSelectedItem(this.item)
     }
-    this._todoStore.dispatch(updateTodo.request(this.item))
   }
 
   handleRemoveButtonClick = (e) => {
@@ -87,6 +87,8 @@ class TodoListItem {
     this.todoItem.append(this.itemIsSelected ? this.todoItemInput : this.todoItemText)
     this.todoItem.append(this.editButton)
     this.todoItem.append(this.removeButton)
+
+    this.todoItemInput.focus()
 
     return this.todoItem
   }

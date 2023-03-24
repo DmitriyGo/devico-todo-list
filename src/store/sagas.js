@@ -1,8 +1,17 @@
-import { v4 } from 'uuid'
 import EventEmitter from '../helpers/event-emitter'
 import { addTodo, clearCompleted, deleteTodo, fetchTodos, updateTodo } from './actions'
+import axios from 'axios'
 
-const initialState = { items: [], loading: false, error: null }
+const baseUrl = 'http://localhost:8000/todos'
+
+const initialState = {
+  items: [],
+  total: 0,
+  active: 0,
+  completed: 0,
+  loading: false,
+  error: null,
+}
 
 class Sagas extends EventEmitter {
   constructor() {
@@ -17,69 +26,38 @@ class Sagas extends EventEmitter {
   }
 
   onFetchTodos() {
-    try {
-      const todos = JSON.parse(localStorage.getItem('todos'))
-      if (!todos) {
-        localStorage.setItem('todos', JSON.stringify([]))
-      }
-
-      this.dispatch(fetchTodos.success(todos || []))
-    } catch (error) {
-      this.dispatch(fetchTodos.failure(error))
-    }
+    axios
+      .get(baseUrl)
+      .then(({ data }) => this.dispatch(fetchTodos.success(data || [])))
+      .catch((error) => this.dispatch(fetchTodos.failure(error)))
   }
 
   onAddTodo(todo) {
-    try {
-      todo._id = v4()
-      const todos = JSON.parse(localStorage.getItem('todos')) || []
-      const newTodos = JSON.stringify([...todos, todo])
-
-      localStorage.setItem('todos', newTodos)
-
-      this.dispatch(addTodo.success(todo))
-    } catch (error) {
-      this.dispatch(addTodo.failure(error))
-    }
+    axios
+      .post(baseUrl, todo)
+      .then(({ data }) => this.dispatch(addTodo.success(data)))
+      .catch((error) => this.dispatch(addTodo.failure(error)))
   }
 
   onUpdateTodo(todo) {
-    try {
-      const todos = JSON.parse(localStorage.getItem('todos')) || []
-      const newTodos = JSON.stringify(todos.map((t) => (t._id === todo._id ? todo : t)))
-
-      localStorage.setItem('todos', newTodos)
-
-      this.dispatch(updateTodo.success(todo))
-    } catch (error) {
-      this.dispatch(updateTodo.failure(error))
-    }
+    axios
+      .put(`${baseUrl}/${todo._id}`, todo)
+      .then(({ data }) => this.dispatch(updateTodo.success(data)))
+      .catch((error) => this.dispatch(updateTodo.failure(error)))
   }
 
   onDeleteTodo(todo) {
-    try {
-      const todos = JSON.parse(localStorage.getItem('todos')) || []
-      const newTodos = JSON.stringify(todos.filter((t) => t._id !== todo._id))
-
-      localStorage.setItem('todos', newTodos)
-
-      this.dispatch(deleteTodo.success(todo))
-    } catch (error) {
-      this.dispatch(deleteTodo.failure(error))
-    }
+    axios
+      .delete(`${baseUrl}/${todo._id}`)
+      .then(({ data }) => this.dispatch(deleteTodo.success(data)))
+      .catch((error) => this.dispatch(deleteTodo.failure(error)))
   }
 
   onClearCompletedTodos() {
-    try {
-      const todos = JSON.parse(localStorage.getItem('todos')) || []
-      const newTodos = JSON.stringify(todos.filter((t) => !t.completed))
-
-      localStorage.setItem('todos', newTodos)
-
-      this.dispatch(clearCompleted.success())
-    } catch (error) {
-      this.dispatch(clearCompleted.failure(error))
-    }
+    axios
+      .post(`${baseUrl}/clearCompleted`)
+      .then(() => this.dispatch(clearCompleted.success()))
+      .catch((error) => this.dispatch(clearCompleted.failure(error)))
   }
 
   _setLoading(action) {

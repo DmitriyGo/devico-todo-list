@@ -12,14 +12,6 @@ class TodoFooter {
     this.handleClearButtonClick = this.handleClearButtonClick.bind(this)
   }
 
-  get activeTodosCount() {
-    return this._todoStore.getState()?.items?.filter((i) => !i.completed).length
-  }
-
-  get completedTodosCount() {
-    return this._todoStore.getState()?.items?.filter((i) => i.completed).length
-  }
-
   handleClearButtonClick(e) {
     e.preventDefault()
     this._todoStore.dispatch(clearCompleted.request())
@@ -28,16 +20,20 @@ class TodoFooter {
   render() {
     this.todoItemsFooter.innerHTML = ''
 
+    this.totalTodosCounter = createElement('div')
+    this.totalTodosCounter.textContent = `Total: ${this._todoStore.state.total}`
+
     this.activeTodosCounter = createElement('div')
-    this.activeTodosCounter.textContent = `Active: ${this.activeTodosCount}`
+    this.activeTodosCounter.textContent = `Active: ${this._todoStore.state.active}`
 
     this.completedTodosCounter = createElement('div')
-    this.completedTodosCounter.textContent = `Completed: ${this.completedTodosCount}`
+    this.completedTodosCounter.textContent = `Completed: ${this._todoStore.state.completed}`
 
     this.clearButton = createElement('button', 'todo-app__button-clear')
     this.clearButton.textContent = 'Clear completed'
     this.clearButton.addEventListener('click', this.handleClearButtonClick)
 
+    this.todoItemsFooter.append(this.totalTodosCounter)
     this.todoItemsFooter.append(this.activeTodosCounter)
     this.todoItemsFooter.append(this.completedTodosCounter)
     this.todoItemsFooter.append(this.clearButton)

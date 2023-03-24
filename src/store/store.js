@@ -20,13 +20,20 @@ class Store extends Sagas {
   }
 
   fetchTodos(payload) {
-    this.state = { ...this.state, items: payload, loading: false }
+    this.state = { ...this.state, ...payload, loading: false }
 
     this.emit('update')
   }
 
   addTodo(payload) {
-    this.state = { ...this.state, items: [...this.state.items, payload], loading: false }
+    const newItems = [...this.state.items, payload]
+    this.state = {
+      ...this.state,
+      items: newItems,
+      loading: false,
+      active: newItems.filter((i) => !i.completed).length,
+      total: newItems.length,
+    }
 
     this.emit('update')
   }
@@ -36,26 +43,35 @@ class Store extends Sagas {
       ...this.state,
       items: this.state.items.map((todo) => (todo._id === payload._id ? payload : todo)),
       loading: false,
+      active: this.state.items.filter((i) => !i.completed).length,
+      completed: this.state.items.filter((i) => i.completed).length,
     }
 
     this.emit('update')
   }
 
   deleteTodo(payload) {
+    const newItems = this.state.items.filter((todo) => todo._id !== payload._id)
     this.state = {
       ...this.state,
-      items: this.state.items.filter((todo) => todo._id !== payload._id),
+      items: newItems,
       loading: false,
+      total: newItems.length,
+      active: newItems.filter((i) => !i.completed).length,
+      completed: newItems.filter((i) => i.completed).length,
     }
 
     this.emit('update')
   }
 
   clearCompletedTodos() {
+    const newItems = this.state.items.filter((todo) => !todo.completed)
     this.state = {
       ...this.state,
-      items: this.state.items.filter((todo) => !todo.completed),
+      items: newItems,
       loading: false,
+      total: newItems.length,
+      completed: 0,
     }
 
     this.emit('update')

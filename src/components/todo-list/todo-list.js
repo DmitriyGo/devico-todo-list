@@ -11,6 +11,8 @@ class TodoList {
     this._todoStore.subscribe(() => this.update())
     this._todoStore.dispatch(fetchTodos.request())
 
+    this.loading = this._todoStore.state.loading
+
     this.setSelectedItem = this.setSelectedItem.bind(this)
 
     this.items = this._todoStore.getState().items || []
@@ -19,6 +21,7 @@ class TodoList {
 
   setSelectedItem = (item) => {
     this.selectedTodo = item
+    this.render()
   }
 
   update() {
@@ -29,13 +32,22 @@ class TodoList {
   }
 
   render() {
-    this.todoItemsList.innerHTML = ''
+    if (this.loading) {
+      this.todoItemsList.innerHTML = ''
 
-    this.items.forEach((item) => {
-      this.todoItemsList.append(
-        new TodoListItem(item, item === this.selectedTodo, this.setSelectedItem).render(),
-      )
-    })
+      this.loadingText = createElement('li')
+      this.loadingText.textContent = '🔃 Loading...'
+
+      this.todoItemsList.append(this.loadingText)
+    } else {
+      this.todoItemsList.innerHTML = ''
+
+      this.items.forEach((item) => {
+        this.todoItemsList.append(
+          new TodoListItem(item, item === this.selectedTodo, this.setSelectedItem).render(),
+        )
+      })
+    }
 
     return this.todoItemsList
   }

@@ -1,7 +1,7 @@
 import TodoForm from '../todo-form/todo-form'
 import TodoList from '../todo-list/todo-list'
 import TodoFooter from '../todo-footer/todo-footer'
-import createElement from '../../helpers/create-element'
+import createElement from '../../helpers/createElement'
 
 class App {
   render() {

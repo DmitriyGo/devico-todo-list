@@ -1,5 +1,5 @@
 import TodoItem from '../../helpers/todo-item'
-import createElement from '../../helpers/create-element'
+import createElement from '../../helpers/createElement'
 import { store, addTodo } from '../../store'
 import './todo-form.scss'
 

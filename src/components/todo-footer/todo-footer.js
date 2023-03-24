@@ -1,5 +1,5 @@
 import { store, clearCompleted } from '../../store'
-import createElement from '../../helpers/create-element'
+import createElement from '../../helpers/createElement'
 import './todo-footer.scss'
 
 class TodoFooter {

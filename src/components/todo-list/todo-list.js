@@ -1,4 +1,4 @@
-import createElement from '../../helpers/create-element'
+import createElement from '../../helpers/createElement'
 import { store, fetchTodos } from '../../store'
 import TodoListItem from '../todo-list-item/todo-list-item'
 import './todo-list.scss'

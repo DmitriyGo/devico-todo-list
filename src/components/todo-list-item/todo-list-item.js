@@ -1,5 +1,5 @@
 import { store, deleteTodo, updateTodo } from '../../store'
-import createElement from '../../helpers/create-element'
+import createElement from '../../helpers/createElement'
 import './todo-list-item.scss'
 
 class TodoListItem {

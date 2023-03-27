@@ -38,23 +38,15 @@ class Store extends Sagas {
   }
 
   updateTodo(payload) {
-    let activeCount = this.state.active
-    let completedCount = this.state.completed
-
-    if (payload.completed) {
-      activeCount -= 1
-      completedCount += 1
-    } else if (!payload.completed && activeCount !== this.state.items.length) {
-      activeCount += 1
-      completedCount -= 1
-    }
+    const newItems = this.state.items.map((i) => (i._id !== payload.item._id ? i : payload.item))
 
     this.state = {
       ...this.state,
-      items: this.state.items.map((todo) => (todo._id === payload._id ? payload : todo)),
+      items: newItems,
       loading: false,
-      active: activeCount,
-      completed: completedCount,
+      active: payload.active,
+      completed: payload.completed,
+      total: payload.total,
     }
 
     this.emit('update')

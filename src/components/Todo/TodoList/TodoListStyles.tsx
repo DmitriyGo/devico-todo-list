@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material'
 
-export const TodoTableWrapper = styled(Box)(() => ({
+export const TodoTableWrapper = styled(Box)(({ theme }) => ({
   '& .active': {
     backgroundColor: '#d47483',
     color: '#1a3e72',
@@ -11,13 +11,29 @@ export const TodoTableWrapper = styled(Box)(() => ({
     color: '#1a3e72',
     fontWeight: '600',
   },
+  '& .MuiDataGrid-columnHeaderTitleContainer': {
+    justifyContent: 'space-between',
+  },
   '& .MuiDataGrid-root': {
     border: 'none',
     width: '100%',
   },
+  '& .MuiDataGrid-iconButtonContainer': {
+    visibility: 'visible !important',
+    width: 'auto !important',
+    display: 'flex',
+  },
+  '& .MuiDataGrid-columnSeparator': {
+    display: 'none !important',
+  },
+  '& .MuiCheckbox-root': {
+    color: `${theme.palette.primary.light} !important`,
+  },
+  '& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
+    outline: 'none !important',
+  },
   '& .MuiDataGrid-cell': {
     borderBottom: 'none',
-    outline: 'none',
   },
   '& .name-column--cell': {
     color: 'black',
@@ -31,10 +47,28 @@ export const TodoTableWrapper = styled(Box)(() => ({
   '& .MuiDataGrid-footerContainer': {
     backgroundColor: 'white',
   },
-  '& .MuiCheckbox-root': {
-    color: `red !important`,
-  },
   '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
     color: `grey !important`,
   },
 }))
+
+export const WrapperBoxStyles = {
+  bgcolor: 'white',
+  width: '100%',
+}
+
+export const ButtonBoxStyles = {
+  display: 'flex',
+  m: '0 1rem 1.5rem',
+}
+
+export const SettingsIconStyles = {
+  cursor: 'pointer',
+  color: '#1976d2',
+  zIndex: '20',
+  '&:hover': {
+    color: '#1988ff',
+  },
+}
+
+export const FooterButtonStyles = { mr: '1.5rem', fontSize: '0.8rem' }

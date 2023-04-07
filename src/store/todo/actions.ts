@@ -1,6 +1,4 @@
-import { GridSortModel } from '@mui/x-data-grid'
-
-import { Todo } from './todoSlice'
+import { Todo } from './types'
 
 export const TodoActionTypes = {
   fetchTodos: 'FETCH_TODOS',
@@ -10,14 +8,9 @@ export const TodoActionTypes = {
   clearCompleted: 'CLEAR_COMPLETED',
 }
 
-export const fetchTodos = (payload: {
-  page: number
-  pageSize: number
-  sorting: GridSortModel
-}) => {
+export const fetchTodos = () => {
   return {
     type: TodoActionTypes.fetchTodos,
-    payload,
   }
 }
 

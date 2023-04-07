@@ -1,37 +1,44 @@
-import { Settings } from '@mui/icons-material'
 import { Box, Button } from '@mui/material'
 import {
   DataGrid,
   GridColDef,
-  GridRenderCellParams,
   GridSortModel,
-  GridTreeNodeWithRender,
   GridRowSelectionModel,
+  GridCellParams,
+  GridPaginationModel,
 } from '@mui/x-data-grid'
-import React, { FC, MouseEvent, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 
-import { TodoTableWrapper } from './TodoListStyles'
+import {
+  ButtonBoxStyles,
+  FooterButtonStyles,
+  TodoTableWrapper,
+  WrapperBoxStyles,
+} from './TodoListStyles'
+import DropdownMenu from '../TodoDropdown/TodoDropdown'
+import TodoModal from '../TodoModal/TodoModal'
 
-import TodoModal from '@/components/Todo/TodoModal/TodoModal'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { clearCompleted, fetchTodos, removeTodo } from '@/store/todo/actions'
-import { Todo } from '@/store/todo/todoSlice'
+import {
+  clearCompleted,
+  fetchTodos,
+  removeTodo,
+  updateTodo,
+  setPaginationModel,
+  setSorting,
+  Todo,
+} from '@/store/todo'
 
 const TodoList: FC = () => {
   const dispatch = useAppDispatch()
 
-  const { items, totalPages, isLoading } = useAppSelector((state) => state.todo)
+  const [modalType, setModalType] = useState<'edit' | 'remove'>('edit')
   const [selectedItem, setSelectedItem] = useState<Todo | null>(null)
-  const [open, setOpen] = useState<boolean>(false)
-
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 8,
-  })
-  const [sorting, setSorting] = useState<GridSortModel>([])
-  const [selectionModel, setSelectionModel] =
-    React.useState<GridRowSelectionModel>([])
-  const [rowCountState, setRowCountState] = useState<number>(0)
+  const { items, total, completed, paginationModel, sorting, isLoading } =
+    useAppSelector((state) => state.todo)
+  const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
+    [],
+  )
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', flex: 1 },
@@ -40,8 +47,6 @@ const TodoList: FC = () => {
       headerName: 'Completed',
       flex: 1,
       align: 'center',
-      headerAlign: 'center',
-
       cellClassName: (params) => {
         return params.value ? 'completed' : 'active'
       },
@@ -50,8 +55,6 @@ const TodoList: FC = () => {
       field: 'createdAt',
       headerName: 'Created at',
       flex: 1,
-      align: 'center',
-      headerAlign: 'center',
       valueGetter: (params) => {
         return new Date(params.value).toLocaleDateString('en-UK', {
           dateStyle: 'medium',
@@ -63,111 +66,125 @@ const TodoList: FC = () => {
       headerName: '',
       sortable: false,
       align: 'center',
-      renderCell: (params) => {
-        return (
-          <Settings
-            onClick={(e) => handleClickOpen(e, params)}
-            sx={{
-              cursor: 'pointer',
-              color: '#1976d2',
-              zIndex: '20',
-              '&:hover': {
-                color: '#1988ff',
-              },
-            }}
-          />
-        )
-      },
+      renderCell: (params: GridCellParams<Todo>) => (
+        <DropdownMenu
+          item={params.row}
+          onEdit={() => handleShowModal('edit', params.row)}
+          onChangeStatus={() => handleChangeStatus(params.row)}
+          onRemove={() => handleShowModal('remove', params.row)}
+        />
+      ),
     },
   ]
 
   useEffect(() => {
-    if (!selectionModel.length) {
-      dispatch(
-        fetchTodos({
-          ...paginationModel,
-          page: paginationModel.page + 1,
-          sorting,
-        }),
-      )
-    }
+    dispatch(fetchTodos())
   }, [dispatch, paginationModel, sorting])
 
-  useEffect(() => {
-    setRowCountState((prevTotalPages) =>
-      totalPages !== undefined
-        ? totalPages * paginationModel.pageSize
-        : prevTotalPages,
-    )
-  }, [paginationModel.pageSize, totalPages])
-
-  const handleClickOpen = (
-    e: MouseEvent<HTMLOrSVGElement>,
-    {
-      row,
-    }: GridRenderCellParams<Todo, unknown, unknown, GridTreeNodeWithRender>,
-  ) => {
-    e.stopPropagation()
-    setSelectedItem(row)
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
+  // ==== TABLE METHODS ==== //
 
   const handleSortModelChange = (sortModel: GridSortModel) => {
-    setSorting(sortModel)
+    dispatch(setSorting(sortModel))
   }
 
-  const handleRemove = (item: string | null) => {
-    if (item) {
-      dispatch(removeTodo(item))
-    } else {
-      dispatch(removeTodo(selectionModel.map((i) => i.toString())))
-    }
+  const handlePaginationChange = (model: GridPaginationModel) => {
+    dispatch(setPaginationModel(model))
+  }
+
+  const handleSelectionModelChange = (
+    rowSelectionModel: GridRowSelectionModel,
+  ) => {
+    setSelectionModel(rowSelectionModel)
+  }
+
+  // ==== CELL PROPERTIES ==== //
+
+  const handleChangeStatus = (todo: Todo) => {
+    dispatch(updateTodo({ ...todo, completed: !todo.completed }))
+  }
+
+  const handleShowModal = (type: 'edit' | 'remove', item: Todo) => {
+    setSelectedItem(item)
+    setModalType(type)
+  }
+
+  // ==== FOOTER BUTTONS ==== //
+
+  const handleClearCompleted = () => {
+    dispatch(clearCompleted())
+  }
+
+  const handleRemoveSelected = () => {
+    dispatch(removeTodo(selectionModel.map((i) => i.toString())))
     setSelectionModel([])
   }
 
+  // ==== MODAL METHODS ==== //
+
+  const handeModalRemove = (item: Todo) => {
+    setSelectedItem(null)
+    dispatch(removeTodo(item._id))
+  }
+
+  const handleModalEdit = (item: Todo) => {
+    setSelectedItem(null)
+    dispatch(updateTodo(item))
+  }
+
   return (
-    <Box sx={{ width: '75%' }}>
-      {open && selectedItem && (
+    <Box sx={WrapperBoxStyles}>
+      {selectedItem && (
         <TodoModal
-          open={open}
           item={selectedItem}
-          onRemove={handleRemove}
-          onClose={handleClose}
+          type={modalType}
+          onRemove={handeModalRemove}
+          onEdit={handleModalEdit}
+          onClose={() => setSelectedItem(null)}
         />
       )}
 
       <TodoTableWrapper>
-        <DataGrid
-          autoHeight
-          disableColumnFilter
-          disableColumnSelector
-          rows={items}
-          columns={columns}
-          loading={isLoading}
-          rowCount={rowCountState}
-          getRowId={(row) => row._id}
-          checkboxSelection
-          rowSelectionModel={selectionModel}
-          onRowSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel)
-          }}
-          sortingMode="server"
-          onSortModelChange={handleSortModelChange}
-          pageSizeOptions={[5, 8]}
-          paginationMode={'server'}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-        />
+        {paginationModel && (
+          <DataGrid
+            autoHeight
+            disableColumnFilter
+            disableColumnMenu
+            disableColumnSelector
+            rows={items}
+            columns={columns}
+            loading={isLoading}
+            rowCount={total}
+            getRowId={(row) => row._id}
+            checkboxSelection
+            rowSelectionModel={selectionModel}
+            onRowSelectionModelChange={handleSelectionModelChange}
+            sortingMode="server"
+            sortModel={sorting}
+            onSortModelChange={handleSortModelChange}
+            pageSizeOptions={[5, 8]}
+            paginationMode={'server'}
+            paginationModel={paginationModel}
+            onPaginationModelChange={handlePaginationChange}
+          />
+        )}
       </TodoTableWrapper>
-      <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: '1rem' }}>
-        <Button variant={'outlined'} onClick={() => handleRemove(null)}>
+      <Box sx={ButtonBoxStyles}>
+        <Button
+          disabled={!selectionModel.length}
+          variant={'contained'}
+          color={'secondary'}
+          onClick={handleRemoveSelected}
+          sx={FooterButtonStyles}
+        >
           Remove Selected
         </Button>
-        <Button variant={'outlined'} onClick={() => dispatch(clearCompleted())}>
+        <Button
+          disabled={!completed}
+          variant={'contained'}
+          color={'secondary'}
+          onClick={handleClearCompleted}
+          sx={FooterButtonStyles}
+        >
           Clear Completed
         </Button>
       </Box>

@@ -1,20 +1,20 @@
 import './TodoFormStyles'
+import { Button, TextField } from '@mui/material'
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react'
 
 import {
   StyledTodoForm,
-  StyledTodoFormButton,
-  StyledTodoFormInput,
-  StyledTodoFormTitle,
   StyledTodoFormWrapper,
+  TextFieldStyles,
 } from './TodoFormStyles'
 
 import { useAppDispatch } from '@/store/hooks'
 import { addTodo } from '@/store/todo/actions'
 
 const TodoForm = () => {
-  const [value, setValue] = useState<string>('')
   const dispatch = useAppDispatch()
+
+  const [value, setValue] = useState<string>('')
 
   const onFormSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -33,14 +33,17 @@ const TodoForm = () => {
 
   return (
     <StyledTodoFormWrapper>
-      <StyledTodoFormTitle>TODO LIST</StyledTodoFormTitle>
       <StyledTodoForm onSubmit={onFormSubmit}>
-        <StyledTodoFormInput
+        <TextField
+          sx={TextFieldStyles}
+          variant={'outlined'}
           placeholder="Add new todo..."
           value={value}
           onChange={handleInputChange}
         />
-        <StyledTodoFormButton type="submit">SUBMIT</StyledTodoFormButton>
+        <Button variant={'outlined'} color={'secondary'} type="submit">
+          SUBMIT
+        </Button>
       </StyledTodoForm>
     </StyledTodoFormWrapper>
   )

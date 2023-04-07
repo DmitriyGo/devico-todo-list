@@ -1,13 +1,16 @@
-import { createTheme, ThemeProvider } from '@mui/material'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { SnackbarProvider } from 'notistack'
 
 import TodoApp from '@/components/Todo'
+import { theme } from '@/helpers'
 
 const App = () => {
-  const theme = createTheme()
-
   return (
     <ThemeProvider theme={theme}>
-      <TodoApp />
+      <SnackbarProvider maxSnack={3}>
+        <CssBaseline />
+        <TodoApp />
+      </SnackbarProvider>
     </ThemeProvider>
   )
 }

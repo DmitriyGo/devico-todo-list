@@ -1,6 +1,6 @@
 import { Settings } from '@mui/icons-material'
 import { Button, Menu, MenuItem } from '@mui/material'
-import { FC, MouseEvent, useCallback, useState } from 'react'
+import { FC, MouseEvent, useState } from 'react'
 
 import { settingsButtonStyles } from './TodoDropdownStyles'
 

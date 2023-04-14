@@ -17,7 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["./src/components/*"],
+      "@/components": ["./src/components"],
       "@/store/*": ["./src/store/*"],
       "@/helpers": ["./src/helpers"]
     }

@@ -50,32 +50,28 @@ const TodoModal: FC<TodoModalProps> = ({
                   sx={{
                     width: '27rem',
                   }}
-                  variant={'outlined'}
+                  variant="outlined"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyUp={handleTextFieldKeyUp}
                 />
                 <Button
                   onClick={() => onEdit({ ...item, name: inputValue })}
-                  variant={'outlined'}
-                  color={'secondary'}
+                  variant="outlined"
+                  color="secondary"
                 >
                   Edit
                 </Button>
               </>
             ) : (
               <>
-                <Button
-                  onClick={onClose}
-                  variant={'outlined'}
-                  color={'primary'}
-                >
+                <Button onClick={onClose} variant="outlined" color="primary">
                   Cancel
                 </Button>
                 <Button
                   onClick={() => onRemove(item)}
-                  variant={'outlined'}
-                  color={'error'}
+                  variant="outlined"
+                  color="error"
                   sx={{ ml: '1rem' }}
                 >
                   Remove
@@ -83,20 +79,10 @@ const TodoModal: FC<TodoModalProps> = ({
               </>
             )}
           </Box>
-          {/*<Button*/}
-          {/*  sx={{ width: '13rem' }}*/}
-          {/*  variant="contained"*/}
-          {/*  color={isRemoveConfirmed ? 'secondary' : 'error'}*/}
-          {/*  onClick={handleRemoveButtonClick}*/}
-          {/*  onBlur={() => setIsRemoveConfirmed(false)}*/}
-          {/*>*/}
-          {/*  <Delete />*/}
-          {/*  {isRemoveConfirmed ? 'Confirm delete?' : 'Delete item?'}*/}
-          {/*</Button>*/}
         </DialogContent>
         {type === 'edit' && (
           <DialogActions>
-            <Button variant={'outlined'} onClick={onClose}>
+            <Button variant="outlined" onClick={onClose}>
               Close
             </Button>
           </DialogActions>

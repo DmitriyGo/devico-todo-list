@@ -57,6 +57,13 @@ export const WrapperBoxStyles = {
   width: '100%',
 }
 
+export const NoItemsStyles = {
+  bgcolor: 'white',
+  width: '100%',
+  p: '1rem 0',
+  textAlign: 'center',
+}
+
 export const ButtonBoxStyles = {
   display: 'flex',
   m: '0 1rem 1.5rem',

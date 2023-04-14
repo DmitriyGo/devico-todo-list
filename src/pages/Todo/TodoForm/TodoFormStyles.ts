@@ -1,5 +1,7 @@
 import { styled } from '@mui/material'
 
+import { theme } from '@/helpers'
+
 export const StyledTodoFormWrapper = styled('div')`
   width: 100%;
   display: flex;
@@ -20,4 +22,16 @@ export const StyledTodoForm = styled('form')`
 
 export const TextFieldStyles = {
   width: '70%',
+}
+
+export const LogoutButtonStyles = {
+  color: 'white',
+  bgcolor: theme.palette.primary.main,
+  '&:hover': { bgcolor: theme.palette.primary.dark },
+}
+
+export const LogoutBoxStyles = {
+  position: 'absolute',
+  top: '2rem',
+  right: '2rem',
 }

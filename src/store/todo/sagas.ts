@@ -3,32 +3,18 @@ import { enqueueSnackbar } from 'notistack'
 import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects'
 
 import { TodoActionTypes } from './actions'
-import { todoEndpoints } from './endpoints'
 import { setError, setLoading, setTodos } from './todoSlice'
-import { Todo, TodoState } from './types'
+import {
+  CreateTodoResponse,
+  DeleteTodoResponse,
+  FetchTodoResponse,
+  Todo,
+  todoEndpoints,
+  TodoState,
+  UpdateTodoResponse,
+} from './types'
 
 import { httpClient } from '@/helpers'
-
-interface FetchTodoResponse {
-  data: TodoState
-}
-
-interface CreateTodoResponse {
-  data: Todo
-}
-
-interface UpdateTodoResponse {
-  data: {
-    item: Todo
-    completed: number
-    active: number
-    total: number
-  }
-}
-
-interface DeleteTodoResponse {
-  data: Todo
-}
 
 export function* fetchTodosSaga(): Generator<
   unknown,
@@ -55,6 +41,7 @@ export function* fetchTodosSaga(): Generator<
     yield put(setTodos(response.data))
   } catch (error) {
     yield put(setError(error as Error))
+
     enqueueSnackbar('An error occurred while fetching  item', {
       variant: 'error',
     })
@@ -72,6 +59,10 @@ export function* addTodoSaga(
     yield call(httpClient.post, todoEndpoints.createTodo(), action.payload)
 
     yield call(fetchTodosSaga)
+
+    enqueueSnackbar(`Item: '${action.payload.name}' has successfully created`, {
+      variant: 'success',
+    })
   } catch (error) {
     yield put(setError(error as Error))
     enqueueSnackbar('An error occurred while creating item', {
@@ -79,9 +70,6 @@ export function* addTodoSaga(
     })
   } finally {
     yield put(setLoading(false))
-    enqueueSnackbar(`Item: '${action.payload.name}' has successfully created`, {
-      variant: 'success',
-    })
   }
 }
 
@@ -98,6 +86,10 @@ export function* updateTodoSaga(
     )
 
     yield call(fetchTodosSaga)
+
+    enqueueSnackbar(`Item: '${action.payload.name}' has successfully updated`, {
+      variant: 'success',
+    })
   } catch (error) {
     yield put(setError(error as Error))
     enqueueSnackbar('An error occurred while updating item', {
@@ -105,9 +97,6 @@ export function* updateTodoSaga(
     })
   } finally {
     yield put(setLoading(false))
-    enqueueSnackbar(`Item: '${action.payload.name}' has successfully updated`, {
-      variant: 'success',
-    })
   }
 }
 
@@ -122,13 +111,7 @@ export function* removeTodoSaga(
     })
 
     yield call(fetchTodosSaga)
-  } catch (error) {
-    yield put(setError(error as Error))
-    enqueueSnackbar('An error occurred while removing item', {
-      variant: 'error',
-    })
-  } finally {
-    yield put(setLoading(false))
+
     enqueueSnackbar(
       `${action.payload.length} ${
         action.payload.length === 1 ? 'item' : 'items'
@@ -137,6 +120,13 @@ export function* removeTodoSaga(
         variant: 'success',
       },
     )
+  } catch (error) {
+    yield put(setError(error as Error))
+    enqueueSnackbar('An error occurred while removing item', {
+      variant: 'error',
+    })
+  } finally {
+    yield put(setLoading(false))
   }
 }
 
@@ -147,6 +137,10 @@ export function* clearCompletedTodosSaga() {
     yield call(httpClient.delete, todoEndpoints.clearCompleted())
 
     yield call(fetchTodosSaga)
+
+    enqueueSnackbar(`Completed items successfully removed`, {
+      variant: 'success',
+    })
   } catch (error) {
     yield put(setError(error as Error))
     enqueueSnackbar('An error occurred while removing completed items', {
@@ -154,9 +148,6 @@ export function* clearCompletedTodosSaga() {
     })
   } finally {
     yield put(setLoading(false))
-    enqueueSnackbar(`Completed items successfully removed`, {
-      variant: 'success',
-    })
   }
 }
 

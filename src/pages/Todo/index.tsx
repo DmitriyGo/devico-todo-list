@@ -1,10 +1,10 @@
-import './TodoStyles'
+import './styles'
 
+import { StyledTodoApp, StyledTodoTitle } from './styles'
 import TodoForm from './TodoForm/TodoForm'
 import TodoList from './TodoList/TodoList'
-import { StyledTodoApp, StyledTodoTitle } from './TodoStyles'
 
-const TodoApp = () => {
+const TodoPage = () => {
   return (
     <StyledTodoApp>
       <StyledTodoTitle>TODO LIST</StyledTodoTitle>
@@ -14,4 +14,4 @@ const TodoApp = () => {
   )
 }
 
-export default TodoApp
+export default TodoPage

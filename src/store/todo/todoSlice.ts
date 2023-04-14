@@ -41,6 +41,9 @@ const todoSlice = createSlice({
     setTodos: (state, action: PayloadAction<TodoState>) => {
       return { ...state, ...action.payload }
     },
+    resetState: () => {
+      return initialState
+    },
   },
 })
 
@@ -50,6 +53,7 @@ export const {
   setPaginationModel,
   setSorting,
   setTodos,
+  resetState,
 } = todoSlice.actions
 
 export default todoSlice.reducer

@@ -1,17 +1,18 @@
 import { Box, Button } from '@mui/material'
 import {
   DataGrid,
-  GridColDef,
-  GridSortModel,
-  GridRowSelectionModel,
   GridCellParams,
+  GridColDef,
   GridPaginationModel,
+  GridRowSelectionModel,
+  GridSortModel,
 } from '@mui/x-data-grid'
 import React, { FC, useEffect, useState } from 'react'
 
 import {
   ButtonBoxStyles,
   FooterButtonStyles,
+  NoItemsStyles,
   TodoTableWrapper,
   WrapperBoxStyles,
 } from './TodoListStyles'
@@ -23,11 +24,12 @@ import {
   clearCompleted,
   fetchTodos,
   removeTodo,
-  updateTodo,
   setPaginationModel,
   setSorting,
   Todo,
+  updateTodo,
 } from '@/store/todo'
+import { resetState } from '@/store/todo/todoSlice'
 
 const TodoList: FC = () => {
   const dispatch = useAppDispatch()
@@ -79,6 +81,10 @@ const TodoList: FC = () => {
 
   useEffect(() => {
     dispatch(fetchTodos())
+
+    return () => {
+      dispatch(resetState())
+    }
   }, [dispatch, paginationModel, sorting])
 
   // ==== TABLE METHODS ==== //
@@ -131,6 +137,10 @@ const TodoList: FC = () => {
     dispatch(updateTodo(item))
   }
 
+  if (!items.length) {
+    return <Box sx={NoItemsStyles}>No items now</Box>
+  }
+
   return (
     <Box sx={WrapperBoxStyles}>
       {selectedItem && (
@@ -162,7 +172,7 @@ const TodoList: FC = () => {
             sortModel={sorting}
             onSortModelChange={handleSortModelChange}
             pageSizeOptions={[5, 8]}
-            paginationMode={'server'}
+            paginationMode="server"
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationChange}
           />
@@ -171,8 +181,8 @@ const TodoList: FC = () => {
       <Box sx={ButtonBoxStyles}>
         <Button
           disabled={!selectionModel.length}
-          variant={'contained'}
-          color={'secondary'}
+          variant="contained"
+          color="secondary"
           onClick={handleRemoveSelected}
           sx={FooterButtonStyles}
         >
@@ -180,8 +190,8 @@ const TodoList: FC = () => {
         </Button>
         <Button
           disabled={!completed}
-          variant={'contained'}
-          color={'secondary'}
+          variant="contained"
+          color="secondary"
           onClick={handleClearCompleted}
           sx={FooterButtonStyles}
         >

@@ -4,6 +4,7 @@ import { AuthState, IUser } from './types'
 
 const initialState: AuthState = {
   user: null,
+  accessToken: null,
   isLoading: false,
   error: null,
 }
@@ -21,9 +22,13 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<IUser | null>) => {
       state.user = action.payload
     },
+    setAccessToken: (state, action: PayloadAction<string | null>) => {
+      state.accessToken = action.payload
+    },
   },
 })
 
-export const { setLoading, setError, setUser } = authSlice.actions
+export const { setLoading, setError, setUser, setAccessToken } =
+  authSlice.actions
 
 export default authSlice.reducer

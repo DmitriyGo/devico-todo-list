@@ -28,11 +28,12 @@ export const authEndpoints = {
   register: () => `/${API_URL}/register`,
   login: () => `/${API_URL}/login`,
   logout: () => `/${API_URL}/logout`,
-  refresh: () => `${API_URL}/refresh`,
+  refresh: () => `/${API_URL}/refresh`,
 }
 
 export interface AuthState {
   user: IUser | null
+  accessToken: string | null
   isLoading: boolean
   error: Error | string | null
 }

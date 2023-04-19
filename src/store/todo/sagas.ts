@@ -14,7 +14,7 @@ import {
   UpdateTodoResponse,
 } from './types'
 
-import { httpClient } from '@/helpers'
+import { securedClient } from '@/helpers'
 
 export function* fetchTodosSaga(): Generator<
   unknown,
@@ -29,7 +29,7 @@ export function* fetchTodosSaga(): Generator<
     yield put(setLoading(true))
 
     const response: FetchTodoResponse = yield call(
-      httpClient.post,
+      securedClient.post,
       todoEndpoints.getAllTodos(),
       {
         page: paginationModel.page + 1,
@@ -56,7 +56,7 @@ export function* addTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call(httpClient.post, todoEndpoints.createTodo(), action.payload)
+    yield call(securedClient.post, todoEndpoints.createTodo(), action.payload)
 
     yield call(fetchTodosSaga)
 
@@ -80,7 +80,7 @@ export function* updateTodoSaga(
     yield put(setLoading(true))
 
     yield call(
-      httpClient.put,
+      securedClient.put,
       todoEndpoints.updateTodo(action.payload._id),
       action.payload,
     )
@@ -106,7 +106,7 @@ export function* removeTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call(httpClient.post, todoEndpoints.deleteTodo(), {
+    yield call(securedClient.post, todoEndpoints.deleteTodo(), {
       ids: action.payload,
     })
 
@@ -134,7 +134,7 @@ export function* clearCompletedTodosSaga() {
   try {
     yield put(setLoading(true))
 
-    yield call(httpClient.delete, todoEndpoints.clearCompleted())
+    yield call(securedClient.delete, todoEndpoints.clearCompleted())
 
     yield call(fetchTodosSaga)
 

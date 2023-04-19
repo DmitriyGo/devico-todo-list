@@ -1,5 +1,5 @@
 import './TodoFormStyles'
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react'
 
 import {
@@ -8,15 +8,16 @@ import {
   StyledTodoForm,
   StyledTodoFormWrapper,
   TextFieldStyles,
+  UserLoginStyles,
 } from './TodoFormStyles'
 
 import { logout } from '@/store/auth/actions'
-import { useAppDispatch } from '@/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { addTodo } from '@/store/todo/actions'
 
 const TodoForm = () => {
   const dispatch = useAppDispatch()
-
+  const user = useAppSelector((state) => state.auth.user)
   const [value, setValue] = useState<string>('')
 
   const onFormSubmit = useCallback(
@@ -41,6 +42,7 @@ const TodoForm = () => {
   return (
     <StyledTodoFormWrapper>
       <Box sx={LogoutBoxStyles}>
+        <Typography sx={UserLoginStyles}>{user?.login}</Typography>
         <Button sx={LogoutButtonStyles} onClick={handleLogout}>
           Logout
         </Button>

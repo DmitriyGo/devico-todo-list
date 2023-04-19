@@ -3,11 +3,10 @@ import { enqueueSnackbar } from 'notistack'
 import { call, put, takeEvery } from 'redux-saga/effects'
 
 import { AuthActionTypes } from './actions'
-import { setError, setLoading, setUser } from './authSlice'
+import { setAccessToken, setError, setLoading, setUser } from './authSlice'
 import { authEndpoints, IAuthResponse, ILoginDTO, IRegisterDTO } from './types'
-import appCookies from '../../helpers/appCookies'
 
-import { httpClient } from '@/helpers'
+import { securedClient } from '@/helpers'
 
 export function* registerSaga(
   action: PayloadAction<IRegisterDTO>,
@@ -16,14 +15,15 @@ export function* registerSaga(
     yield put(setLoading(true))
 
     const response = yield call(
-      httpClient.post,
+      securedClient.post,
       authEndpoints.register(),
       action.payload,
     )
 
-    appCookies.setItem('accessToken', response.data.accessToken)
-
     yield put(setUser(response.data.user))
+    yield put(setAccessToken(response.data.accessToken))
+
+    localStorage.setItem('authorized', 'true')
 
     enqueueSnackbar(`You have successfully registered`, {
       variant: 'success',
@@ -45,14 +45,15 @@ export function* loginSaga(
     yield put(setLoading(true))
 
     const response = yield call(
-      httpClient.post,
+      securedClient.post,
       authEndpoints.login(),
       action.payload,
     )
 
-    appCookies.setItem('accessToken', response.data.accessToken)
-
     yield put(setUser(response.data.user))
+    yield put(setAccessToken(response.data.accessToken))
+
+    localStorage.setItem('authorized', 'true')
 
     enqueueSnackbar(`You have successfully logged in`, {
       variant: 'success',
@@ -71,9 +72,11 @@ export function* logoutSaga(): Generator<unknown, void, IAuthResponse> {
   try {
     yield put(setLoading(true))
 
-    yield call(httpClient.post, authEndpoints.logout())
+    yield call(securedClient.post, authEndpoints.logout())
 
     yield put(setUser(null))
+
+    localStorage.removeItem('authorized')
 
     enqueueSnackbar(`You have successfully logged out`, {
       variant: 'success',
@@ -90,12 +93,18 @@ export function* logoutSaga(): Generator<unknown, void, IAuthResponse> {
 
 export function* checkAuthSaga(): Generator<unknown, void, IAuthResponse> {
   try {
+    const authorized = localStorage.getItem('authorized')
+
+    if (!authorized) {
+      return
+    }
+
     yield put(setLoading(true))
 
-    const response = yield call(httpClient.get, authEndpoints.refresh())
+    const response = yield call(securedClient.post, authEndpoints.refresh())
 
-    appCookies.setItem('accessToken', response.data.accessToken)
     yield put(setUser(response.data.user))
+    yield put(setAccessToken(response.data.accessToken))
 
     enqueueSnackbar(`You have successfully logged out`, {
       variant: 'success',

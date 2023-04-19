@@ -24,6 +24,12 @@ export const TextFieldStyles = {
   width: '70%',
 }
 
+export const UserLoginStyles = {
+  color: '#af7eeb',
+  mr: '1rem',
+  cursor: 'pointer',
+}
+
 export const LogoutButtonStyles = {
   color: 'white',
   bgcolor: theme.palette.primary.main,
@@ -34,4 +40,6 @@ export const LogoutBoxStyles = {
   position: 'absolute',
   top: '2rem',
   right: '2rem',
+  display: 'flex',
+  alignItems: 'center',
 }

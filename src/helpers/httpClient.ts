@@ -6,10 +6,12 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios'
 
-import appCookiesStorage from './appCookies'
+import store from '../store/store'
+
+import { logout } from '@/store/auth/actions'
+import { setAccessToken } from '@/store/auth/authSlice'
 
 type AccessToken = string | null
-type RefreshToken = string | null
 
 interface TokenRefreshResponse {
   accessToken: string
@@ -28,7 +30,7 @@ const httpClient: AxiosInstance = axios.create(defaultConfig)
 httpClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const accessToken: AccessToken | undefined =
-      appCookiesStorage.getItem('accessToken')
+      store.getState().auth.accessToken
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`
     }
@@ -40,21 +42,17 @@ httpClient.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => response,
   async (error: AxiosError): Promise<AxiosResponse> => {
     const { response } = error
-    if (response && response.status === 401) {
-      const refreshToken: RefreshToken | undefined =
-        appCookiesStorage.getItem('refreshToken')
-      if (!refreshToken) {
-        throw new Error('User is not authenticated')
-      }
 
+    if (response && response.status === 401) {
       try {
         const refreshResponse: AxiosResponse<TokenRefreshResponse> =
-          await axios.post<TokenRefreshResponse>(
+          await httpClient.post<TokenRefreshResponse>(
             `${import.meta.env.VITE_PUBLIC_API_URL}/auth/refresh`,
-            { refreshToken },
           )
+
         const newAccessToken: string = refreshResponse.data.accessToken
-        appCookiesStorage.setItem('accessToken', newAccessToken)
+
+        store.dispatch(setAccessToken(newAccessToken))
 
         const originalRequest: InternalAxiosRequestConfig | undefined =
           error.config
@@ -64,6 +62,7 @@ httpClient.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
         return axios(originalRequest)
       } catch (error) {
+        store.dispatch(logout())
         throw new Error('User is not authenticated')
       }
     } else {
@@ -71,8 +70,5 @@ httpClient.interceptors.response.use(
     }
   },
 )
-
-export const isHttpClientError = axios.isAxiosError
-export type ApiResponse<Response> = Promise<AxiosResponse<Response>>
 
 export default httpClient

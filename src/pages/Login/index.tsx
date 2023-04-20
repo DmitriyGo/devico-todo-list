@@ -97,10 +97,14 @@ const LoginPage = () => {
           >
             Sign In
           </Button>
-          <MuiLink component="button" variant="body2">
-            <Link to="/register">{"Don't have an account? Sign Up"}</Link>
-          </MuiLink>
         </Box>
+        <MuiLink
+          sx={{ alignSelf: 'flex-start' }}
+          component="button"
+          variant="body2"
+        >
+          <Link to="/register">{"Don't have an account? Sign Up"}</Link>
+        </MuiLink>
       </Box>
     </Container>
   )

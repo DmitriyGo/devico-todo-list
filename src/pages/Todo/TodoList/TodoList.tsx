@@ -81,10 +81,6 @@ const TodoList: FC = () => {
 
   useEffect(() => {
     dispatch(fetchTodos())
-
-    return () => {
-      dispatch(resetState())
-    }
   }, [dispatch, paginationModel, sorting])
 
   // ==== TABLE METHODS ==== //

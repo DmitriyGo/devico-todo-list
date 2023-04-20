@@ -15,7 +15,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { register } from '@/store/auth/actions'
-import { IRegisterDTO } from '@/store/auth/types'
+import {
+  IRegisterDTO,
+  IRegisterFormDTO,
+  registerFormToRegisterDto,
+} from '@/store/auth/types'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 
 const schema = yup.object().shape({
@@ -44,12 +48,12 @@ const RegisterPage = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<IRegisterDTO>({
+  } = useForm<IRegisterFormDTO>({
     resolver: yupResolver(schema),
   })
 
-  const onSubmit: SubmitHandler<IRegisterDTO> = (data) => {
-    dispatch(register(data))
+  const onSubmit: SubmitHandler<IRegisterFormDTO> = (data) => {
+    dispatch(register(registerFormToRegisterDto(data)))
 
     setValue('login', '')
     setValue('password', '')
@@ -113,10 +117,14 @@ const RegisterPage = () => {
           >
             Sign Up
           </Button>
-          <MuiLink component="button" variant="body2">
-            <Link to="/login">{'Already have an account? Sign In'}</Link>
-          </MuiLink>
         </Box>
+        <MuiLink
+          sx={{ alignSelf: 'flex-start' }}
+          component="button"
+          variant="body2"
+        >
+          <Link to="/login">{'Already have an account? Sign In'}</Link>
+        </MuiLink>
       </Box>
     </Container>
   )

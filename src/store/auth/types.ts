@@ -10,10 +10,15 @@ export interface ILoginDTO {
   password: string
 }
 
-export interface IRegisterDTO {
+export interface IRegisterFormDTO {
   login: string
   password: string
   confirm_password: string
+}
+
+export interface IRegisterDTO {
+  login: string
+  password: string
 }
 
 export interface IAuthResponse {
@@ -21,6 +26,15 @@ export interface IAuthResponse {
     accessToken: string
     refreshToken: string
     user: IUser
+  }
+}
+
+export const registerFormToRegisterDto = (
+  data: IRegisterFormDTO,
+): IRegisterDTO => {
+  return {
+    login: data.login,
+    password: data.password,
   }
 }
 

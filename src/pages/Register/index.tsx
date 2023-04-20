@@ -5,21 +5,22 @@ import {
   Box,
   Button,
   Container,
+  debounce,
+  Icon,
   Link as MuiLink,
   TextField,
   Typography,
 } from '@mui/material'
-import { useEffect } from 'react'
+import { KeyboardEvent, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
+import { StyledInputSpinner } from './styles'
+
+import { checkIfServiceKey, httpClient } from '@/helpers'
 import { register } from '@/store/auth/actions'
-import {
-  IRegisterDTO,
-  IRegisterFormDTO,
-  registerFormToRegisterDto,
-} from '@/store/auth/types'
+import { IRegisterFormDTO, registerFormToRegisterDto } from '@/store/auth/types'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 
 const schema = yup.object().shape({
@@ -39,6 +40,9 @@ const RegisterPage = () => {
   const { user } = useAppSelector((state) => state.auth)
   const navigate = useNavigate()
 
+  const [loginTaken, setLoginTaken] = useState(false)
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     if (user) navigate('/')
   }, [navigate, user])
@@ -48,6 +52,7 @@ const RegisterPage = () => {
     setValue,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<IRegisterFormDTO>({
     resolver: yupResolver(schema),
   })
@@ -59,6 +64,19 @@ const RegisterPage = () => {
     setValue('password', '')
     setValue('confirm_password', '')
   }
+
+  const onTextFieldKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    setLoading(checkIfServiceKey(event))
+  }
+
+  const onTextFieldKeyUp = debounce(async () => {
+    const response = await httpClient.post('/auth/check-login', {
+      login: getValues().login,
+    })
+
+    setLoginTaken(response.data)
+    setLoading(false)
+  }, 300)
 
   return (
     <Container component="main" maxWidth="xs">
@@ -76,20 +94,30 @@ const RegisterPage = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+        <Box
+          sx={{ position: 'relative' }}
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <TextField
             fullWidth
             id="login"
             label="Login"
             {...formRegister('login')}
-            error={!!errors.login}
-            helperText={errors.login?.message}
+            error={loginTaken || !!errors.login}
+            helperText={
+              loginTaken ? 'This login is already taken' : errors.login?.message
+            }
             autoComplete="login"
             autoFocus
+            onKeyDown={onTextFieldKeyDown}
+            onKeyUp={onTextFieldKeyUp}
+            sx={{ position: 'relative' }}
           />
+          {loading && <StyledInputSpinner />}
           <TextField
-            sx={{ my: '0.5rem' }}
             fullWidth
+            sx={{ mt: '0.75rem' }}
             label="Password"
             type="password"
             {...formRegister('password')}
@@ -100,6 +128,7 @@ const RegisterPage = () => {
           />
           <TextField
             fullWidth
+            sx={{ mt: '0.75rem' }}
             label="Confirm Password"
             type="password"
             {...formRegister('confirm_password')}
@@ -113,6 +142,7 @@ const RegisterPage = () => {
             fullWidth
             variant="contained"
             color="primary"
+            disabled={loginTaken}
             sx={{ mt: 3, mb: 2, p: '0.5rem 0' }}
           >
             Sign Up

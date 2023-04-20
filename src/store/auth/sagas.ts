@@ -6,7 +6,7 @@ import { AuthActionTypes } from './actions'
 import { setAccessToken, setError, setLoading, setUser } from './authSlice'
 import { authEndpoints, IAuthResponse, ILoginDTO, IRegisterDTO } from './types'
 
-import { securedClient } from '@/helpers'
+import { httpClient } from '@/helpers'
 
 export function* registerSaga(
   action: PayloadAction<IRegisterDTO>,
@@ -15,7 +15,7 @@ export function* registerSaga(
     yield put(setLoading(true))
 
     const response = yield call(
-      securedClient.post,
+      httpClient.post,
       authEndpoints.register(),
       action.payload,
     )
@@ -45,7 +45,7 @@ export function* loginSaga(
     yield put(setLoading(true))
 
     const response = yield call(
-      securedClient.post,
+      httpClient.post,
       authEndpoints.login(),
       action.payload,
     )
@@ -72,7 +72,7 @@ export function* logoutSaga(): Generator<unknown, void, IAuthResponse> {
   try {
     yield put(setLoading(true))
 
-    yield call(securedClient.post, authEndpoints.logout())
+    yield call(httpClient.post, authEndpoints.logout())
 
     yield put(setUser(null))
 
@@ -101,7 +101,7 @@ export function* checkAuthSaga(): Generator<unknown, void, IAuthResponse> {
 
     yield put(setLoading(true))
 
-    const response = yield call(securedClient.post, authEndpoints.refresh())
+    const response = yield call(httpClient.post, authEndpoints.refresh())
 
     yield put(setUser(response.data.user))
     yield put(setAccessToken(response.data.accessToken))

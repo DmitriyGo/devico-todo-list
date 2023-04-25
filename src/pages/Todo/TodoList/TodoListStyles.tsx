@@ -52,6 +52,13 @@ export const TodoTableWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
+export const FooterStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  m: '0 1rem 1rem',
+  justifyContent: 'space-between',
+}
+
 export const WrapperBoxStyles = {
   bgcolor: 'white',
   width: '100%',
@@ -66,7 +73,6 @@ export const NoItemsStyles = {
 
 export const ButtonBoxStyles = {
   display: 'flex',
-  m: '0 1rem 1.5rem',
 }
 
 export const SettingsIconStyles = {

@@ -51,6 +51,7 @@ export interface TodoState {
     pageSize: number
   }
   sorting: GridSortModel
+  isOutdated: boolean
   isLoading: boolean
   error: Error | string | null
 }

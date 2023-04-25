@@ -60,11 +60,20 @@ const theme = createTheme({
           borderLeft: 'none',
           boxShadow: 'none',
         }),
+
+        text: ({ theme }) => ({
+          background: 'transparent',
+          color: theme.palette.primary.dark,
+          '&:hover': {
+            color: theme.palette.primary.main,
+            background: 'transparent',
+          },
+        }),
       },
     },
     MuiTextField: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: () => ({
           '& .MuiInputBase-input': {
             backgroundColor: 'white',
             padding: '0.75rem 0.6rem',
@@ -78,7 +87,7 @@ const theme = createTheme({
     },
     MuiDialog: {
       styleOverrides: {
-        paper: ({ theme }) => ({
+        paper: () => ({
           backgroundColor: 'white',
         }),
       },

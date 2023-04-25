@@ -15,6 +15,7 @@ const initialState: TodoState = {
     pageSize: 8,
   },
   sorting: [{ field: 'createdAt', sort: 'desc' }],
+  isOutdated: false,
   isLoading: false,
   error: null,
 }
@@ -28,6 +29,9 @@ const todoSlice = createSlice({
     },
     setError: (state, action: PayloadAction<Error | string>) => {
       state.error = action.payload
+    },
+    setOutdated: (state, action: PayloadAction<boolean>) => {
+      state.isOutdated = action.payload
     },
     setPaginationModel: (
       state,
@@ -50,6 +54,7 @@ const todoSlice = createSlice({
 export const {
   setLoading,
   setError,
+  setOutdated,
   setPaginationModel,
   setSorting,
   setTodos,

@@ -3,7 +3,7 @@ import { enqueueSnackbar } from 'notistack'
 import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects'
 
 import { TodoActionTypes } from './actions'
-import { setError, setLoading, setTodos } from './todoSlice'
+import { setError, setLoading, setOutdated, setTodos } from './todoSlice'
 import {
   CreateTodoResponse,
   DeleteTodoResponse,
@@ -13,6 +13,7 @@ import {
   TodoState,
   UpdateTodoResponse,
 } from './types'
+import socket from '../../socket'
 
 import { httpClient } from '@/helpers'
 
@@ -39,6 +40,7 @@ export function* fetchTodosSaga(): Generator<
     )
 
     yield put(setTodos(response.data))
+    yield put(setOutdated(false))
   } catch (error) {
     yield put(setError(error as Error))
 
@@ -56,7 +58,7 @@ export function* addTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call(httpClient.post, todoEndpoints.createTodo(), action.payload)
+    yield call([socket, socket.emit], 'addTodo', action.payload)
 
     yield call(fetchTodosSaga)
 
@@ -79,11 +81,7 @@ export function* updateTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call(
-      httpClient.put,
-      todoEndpoints.updateTodo(action.payload._id),
-      action.payload,
-    )
+    yield call([socket, socket.emit], 'updateTodo', action.payload)
 
     yield call(fetchTodosSaga)
 
@@ -106,7 +104,7 @@ export function* removeTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call(httpClient.post, todoEndpoints.deleteTodo(), {
+    yield call([socket, socket.emit], 'removeTodo', {
       ids: action.payload,
     })
 
@@ -134,7 +132,7 @@ export function* clearCompletedTodosSaga() {
   try {
     yield put(setLoading(true))
 
-    yield call(httpClient.delete, todoEndpoints.clearCompleted())
+    yield call([socket, socket.emit], 'clearCompletedTodos')
 
     yield call(fetchTodosSaga)
 

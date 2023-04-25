@@ -6,7 +6,6 @@ import {
   Button,
   Container,
   debounce,
-  Icon,
   Link as MuiLink,
   TextField,
   Typography,

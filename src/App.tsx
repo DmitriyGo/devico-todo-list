@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { TodoPage, RegisterPage, LoginPage } from './pages'
+import socket from './socket'
 
 import { CircleLoader } from '@/components'
 import { theme } from '@/helpers'

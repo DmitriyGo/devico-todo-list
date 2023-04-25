@@ -12,6 +12,7 @@ import React, { FC, useEffect, useState } from 'react'
 import {
   ButtonBoxStyles,
   FooterButtonStyles,
+  FooterStyles,
   NoItemsStyles,
   TodoTableWrapper,
   WrapperBoxStyles,
@@ -29,10 +30,10 @@ import {
   Todo,
   updateTodo,
 } from '@/store/todo'
-import { resetState } from '@/store/todo/todoSlice'
 
 const TodoList: FC = () => {
   const dispatch = useAppDispatch()
+  const { isOutdated } = useAppSelector((state) => state.todo)
 
   const [modalType, setModalType] = useState<'edit' | 'remove'>('edit')
   const [selectedItem, setSelectedItem] = useState<Todo | null>(null)
@@ -41,6 +42,10 @@ const TodoList: FC = () => {
   const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
     [],
   )
+
+  const handleRefresh = () => {
+    dispatch(fetchTodos())
+  }
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', flex: 1 },
@@ -65,9 +70,18 @@ const TodoList: FC = () => {
     },
     {
       field: 'properties',
-      headerName: '',
       sortable: false,
       align: 'center',
+      renderHeader: () => (
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{ fontSize: '12px', p: '0.5rem' }}
+          onClick={handleRefresh}
+        >
+          Refresh
+        </Button>
+      ),
       renderCell: (params: GridCellParams<Todo>) => (
         <DropdownMenu
           item={params.row}
@@ -174,25 +188,36 @@ const TodoList: FC = () => {
           />
         )}
       </TodoTableWrapper>
-      <Box sx={ButtonBoxStyles}>
-        <Button
-          disabled={!selectionModel.length}
-          variant="contained"
-          color="secondary"
-          onClick={handleRemoveSelected}
-          sx={FooterButtonStyles}
-        >
-          Remove Selected
-        </Button>
-        <Button
-          disabled={!completed}
-          variant="contained"
-          color="secondary"
-          onClick={handleClearCompleted}
-          sx={FooterButtonStyles}
-        >
-          Clear Completed
-        </Button>
+      <Box sx={FooterStyles}>
+        <Box sx={ButtonBoxStyles}>
+          <Button
+            disabled={!selectionModel.length}
+            variant="contained"
+            color="secondary"
+            onClick={handleRemoveSelected}
+            sx={FooterButtonStyles}
+          >
+            Remove Selected
+          </Button>
+          <Button
+            disabled={!completed}
+            variant="contained"
+            color="secondary"
+            onClick={handleClearCompleted}
+            sx={FooterButtonStyles}
+          >
+            Clear Completed
+          </Button>
+        </Box>
+        {isOutdated && (
+          <Button
+            variant="text"
+            sx={FooterButtonStyles}
+            onClick={handleRefresh}
+          >
+            Table is outdated, refresh
+          </Button>
+        )}
       </Box>
     </Box>
   )

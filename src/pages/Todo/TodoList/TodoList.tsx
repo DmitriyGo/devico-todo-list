@@ -70,18 +70,9 @@ const TodoList: FC = () => {
     },
     {
       field: 'properties',
+      headerName: '',
       sortable: false,
       align: 'center',
-      renderHeader: () => (
-        <Button
-          variant="outlined"
-          color="primary"
-          sx={{ fontSize: '12px', p: '0.5rem' }}
-          onClick={handleRefresh}
-        >
-          Refresh
-        </Button>
-      ),
       renderCell: (params: GridCellParams<Todo>) => (
         <DropdownMenu
           item={params.row}

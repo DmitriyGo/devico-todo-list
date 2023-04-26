@@ -1,7 +1,7 @@
 import { GridSortModel } from '@mui/x-data-grid'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { TodoState } from './types'
+import { Todo, TodoState } from './types'
 
 const initialState: TodoState = {
   items: [],
@@ -45,6 +45,22 @@ const todoSlice = createSlice({
     setTodos: (state, action: PayloadAction<TodoState>) => {
       return { ...state, ...action.payload }
     },
+    updateTodo: (
+      state,
+      action: PayloadAction<{
+        item: Todo
+        active: number
+        completed: number
+        total: number
+      }>,
+    ) => {
+      state.items = state.items.map((i) =>
+        i._id === action.payload.item._id ? action.payload.item : i,
+      )
+      state.active = action.payload.active
+      state.completed = action.payload.completed
+      state.total = action.payload.total
+    },
     resetState: () => {
       return initialState
     },
@@ -59,6 +75,7 @@ export const {
   setSorting,
   setTodos,
   resetState,
+  updateTodo,
 } = todoSlice.actions
 
 export default todoSlice.reducer

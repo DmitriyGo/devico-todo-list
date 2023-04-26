@@ -13,7 +13,7 @@ import {
   TodoState,
   UpdateTodoResponse,
 } from './types'
-import socket from '../../socket'
+import socket from '../socket'
 
 import { httpClient } from '@/helpers'
 
@@ -58,7 +58,7 @@ export function* addTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call([socket, socket.emit], 'addTodo', action.payload)
+    yield call(httpClient.post, todoEndpoints.createTodo(), action.payload)
 
     yield call(fetchTodosSaga)
 
@@ -81,9 +81,11 @@ export function* updateTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call([socket, socket.emit], 'updateTodo', action.payload)
-
-    yield call(fetchTodosSaga)
+    yield call(
+      httpClient.put,
+      todoEndpoints.updateTodo(action.payload._id),
+      action.payload,
+    )
 
     enqueueSnackbar(`Item: '${action.payload.name}' has successfully updated`, {
       variant: 'success',
@@ -104,7 +106,7 @@ export function* removeTodoSaga(
   try {
     yield put(setLoading(true))
 
-    yield call([socket, socket.emit], 'removeTodo', {
+    yield call(httpClient.post, todoEndpoints.deleteTodo(), {
       ids: action.payload,
     })
 
@@ -132,7 +134,7 @@ export function* clearCompletedTodosSaga() {
   try {
     yield put(setLoading(true))
 
-    yield call([socket, socket.emit], 'clearCompletedTodos')
+    yield call(httpClient.delete, todoEndpoints.clearCompleted())
 
     yield call(fetchTodosSaga)
 

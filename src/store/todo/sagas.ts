@@ -112,14 +112,13 @@ export function* removeTodoSaga(
 
     yield call(fetchTodosSaga)
 
-    enqueueSnackbar(
-      `${action.payload.length} ${
-        action.payload.length === 1 ? 'item' : 'items'
-      } has successfully removed`,
-      {
-        variant: 'success',
-      },
-    )
+    const count = Array.isArray(action.payload) ? action.payload.length : 1
+    const message =
+      count > 1
+        ? `${count} items have been successfully removed`
+        : 'One item has been successfully removed'
+
+    enqueueSnackbar(message, { variant: 'success' })
   } catch (error) {
     yield put(setError(error as Error))
     enqueueSnackbar('An error occurred while removing item', {

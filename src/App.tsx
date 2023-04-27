@@ -1,22 +1,15 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
-import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { TodoPage, RegisterPage, LoginPage } from './pages'
 
 import { CircleLoader } from '@/components'
 import { theme } from '@/helpers'
-import { checkAuth } from '@/store/auth/actions'
-import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { useAppSelector } from '@/store/hooks'
 
 const App = () => {
   const { user, isLoading } = useAppSelector((state) => state.auth)
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    dispatch(checkAuth())
-  }, [])
 
   if (isLoading) {
     return <CircleLoader />

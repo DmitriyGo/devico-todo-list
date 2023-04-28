@@ -13,7 +13,7 @@ export {
   setTodos,
   setSorting,
   setPaginationModel,
-  updateTodo as updateTodoList,
+  editTodo,
   resetState,
   setOutdated,
 } from './todoSlice'

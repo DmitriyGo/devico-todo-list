@@ -1,5 +1,7 @@
-import { io } from 'socket.io-client'
+import io from 'socket.io-client'
 
-const socket = io(import.meta.env.VITE_PUBLIC_API_URL)
+const sockets = io(import.meta.env.VITE_PUBLIC_SOCKET_URL, {
+  transports: ['websocket'],
+})
 
-export default socket
+export default sockets

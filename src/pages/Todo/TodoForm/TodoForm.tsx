@@ -11,9 +11,9 @@ import {
   UserLoginStyles,
 } from './TodoFormStyles'
 
-import { logout } from '@/store/auth/actions'
+import { logout } from '@/store/auth'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { addTodo } from '@/store/todo/actions'
+import { addTodo } from '@/store/todo'
 
 const TodoForm = () => {
   const dispatch = useAppDispatch()

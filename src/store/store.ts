@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 
-import { authSaga } from './auth/sagas'
+import initSockets from './initSockets'
 import rootReducer from './rootReducer'
-import { todoSaga } from './todo/sagas'
+import rootSaga from './rootSaga'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -12,8 +12,9 @@ const store = configureStore({
   middleware: [sagaMiddleware],
 })
 
-sagaMiddleware.run(todoSaga)
-sagaMiddleware.run(authSaga)
+sagaMiddleware.run(rootSaga)
+
+initSockets(store)
 
 export default store
 

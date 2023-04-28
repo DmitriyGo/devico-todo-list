@@ -1,10 +1,11 @@
 import { PayloadAction } from '@reduxjs/toolkit'
 import { enqueueSnackbar } from 'notistack'
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, takeEvery, select } from 'redux-saga/effects'
 
 import { AuthActionTypes } from './actions'
 import { setAccessToken, setError, setLoading, setUser } from './authSlice'
 import { authEndpoints, IAuthResponse, ILoginDTO, IRegisterDTO } from './types'
+import sockets from '../socket'
 
 import { httpClient } from '@/helpers'
 
@@ -53,6 +54,8 @@ export function* loginSaga(
     yield put(setUser(response.data.user))
     yield put(setAccessToken(response.data.accessToken))
 
+    sockets.emit('auth', response.data.user)
+
     localStorage.setItem('authorized', 'true')
 
     enqueueSnackbar(`You have successfully logged in`, {
@@ -71,11 +74,12 @@ export function* loginSaga(
 export function* logoutSaga(): Generator<unknown, void, IAuthResponse> {
   try {
     yield put(setLoading(true))
+    const user = yield select((state) => state.auth.user)
 
     yield call(httpClient.post, authEndpoints.logout())
+    sockets.emit('logout', user)
 
     yield put(setUser(null))
-
     localStorage.removeItem('authorized')
 
     enqueueSnackbar(`You have successfully logged out`, {
@@ -102,6 +106,7 @@ export function* checkAuthSaga(): Generator<unknown, void, IAuthResponse> {
     yield put(setLoading(true))
 
     const response = yield call(httpClient.post, authEndpoints.refresh())
+    sockets.emit('login', response.data.user)
 
     yield put(setUser(response.data.user))
     yield put(setAccessToken(response.data.accessToken))

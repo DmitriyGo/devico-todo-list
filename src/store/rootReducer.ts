@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
 
-import authReducer from './auth/authSlice'
-import todoReducer from './todo/todoSlice'
+import { authReducer } from './auth'
+import { todoReducer } from './todo'
 
 const rootReducer = combineReducers({ todo: todoReducer, auth: authReducer })
 

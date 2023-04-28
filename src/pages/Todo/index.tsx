@@ -7,20 +7,14 @@ import TodoForm from './TodoForm/TodoForm'
 import TodoList from './TodoList/TodoList'
 
 import { useAppDispatch } from '@/store/hooks'
-import { fetchTodos } from '@/store/todo'
-import { resetState } from '@/store/todo/todoSlice'
-import socket from '@/store/todo/todoSockets'
+import { resetState } from '@/store/todo'
 
 const TodoPage = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    socket.connect()
-    dispatch(fetchTodos())
-
     return () => {
       dispatch(resetState())
-      socket.disconnect()
     }
   }, [])
 

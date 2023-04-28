@@ -45,7 +45,7 @@ const todoSlice = createSlice({
     setTodos: (state, action: PayloadAction<TodoState>) => {
       return { ...state, ...action.payload }
     },
-    updateTodo: (
+    editTodo: (
       state,
       action: PayloadAction<{
         item: Todo
@@ -75,7 +75,7 @@ export const {
   setSorting,
   setTodos,
   resetState,
-  updateTodo,
+  editTodo,
 } = todoSlice.actions
 
 export default todoSlice.reducer

@@ -43,13 +43,13 @@ export function* loginSaga(
   action: PayloadAction<ILoginDTO>,
 ): Generator<unknown, void, IAuthResponse> {
   try {
-    yield put(setLoading(true))
-
     const response = yield call(
       httpClient.post,
       authEndpoints.login(),
       action.payload,
     )
+
+    yield put(setLoading(true))
 
     yield put(setUser(response.data.user))
     yield put(setAccessToken(response.data.accessToken))
